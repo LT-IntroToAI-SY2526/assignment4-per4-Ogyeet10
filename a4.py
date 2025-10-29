@@ -12,7 +12,40 @@ class TTTBoard:
     def __init__(self):
         self.board= ["*"] * 9
     def __str__(self):
-         return f"{self.board[0:2]}\n {self.board[3:5]}\n {self.board[6:8]}"
+         return f"{' '.join(self.board[0:3])}\n{' '.join(self.board[3:6])}\n{' '.join(self.board[6:9])}"
+    
+    def make_move(self, player: str, position: int) -> bool:
+        """Place player's mark at position if valid. Returns True if move made."""
+        if player not in ("X", "O"):
+            return False
+        if not isinstance(position, int) or position < 0 or position > 8:
+            return False
+        if self.board[position] != "*":
+            return False
+        self.board[position] = player
+        return True
+    
+    def has_won(self, player: str) -> bool:
+        """Return True if the given player has a winning line."""
+        if player not in ("X", "O"):
+            return False
+        wins = [
+            (0, 1, 2), (3, 4, 5), (6, 7, 8),  # rows
+            (0, 3, 6), (1, 4, 7), (2, 5, 8),  # cols
+            (0, 4, 8), (2, 4, 6),            # diagonals
+        ]
+        for a, b, c in wins:
+            if self.board[a] == self.board[b] == self.board[c] == player:
+                return True
+        return False
+    
+    def game_over(self) -> bool:
+        """Return True if someone has won or the board is full."""
+        return self.has_won("X") or self.has_won("O") or "*" not in self.board
+    
+    def clear(self) -> None:
+        """Reset the board to the initial empty state."""
+        self.board = ["*"] * 9
         
     
 
